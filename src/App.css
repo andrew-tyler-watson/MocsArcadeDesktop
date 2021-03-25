@@ -1,0 +1,21 @@
+body {
+  background-color: black;
+  color: rgb(124, 255, 36);
+}
+
+.center-text {
+  text-align: center;
+}
+
+.app-container {
+  height: 100%;
+  width: 95%;
+}
+
+.app-header {
+  height: 20%;
+}
+
+.carousel-container {
+  height: 80%;
+}
