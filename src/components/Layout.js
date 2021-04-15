@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
-import GameCarousel from './Game/GameCarousel';
+import GameCarousel from './GameStage/GameCarousel/GameCarousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
