@@ -1,5 +1,11 @@
 import React from 'react';
 
-const GameDetailsPanel = () => {
-  return <div>Game Details Panel</div>;
+const GameDetails = (props) => {
+  return (
+    <div>
+      <h2>{props.title}</h2>
+    </div>
+  );
 };
+
+export default GameDetails;
