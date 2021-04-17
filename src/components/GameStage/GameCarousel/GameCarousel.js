@@ -77,7 +77,7 @@ const GameCarousel = (props) => {
 
   let gameCards = props.games.map((game, i) => {
     return (
-      <div key={i} id={game.gameInfo.name}>
+      <div key={i} id={game.gameInfo.name} className="card">
         {game.gameInfo.name}
       </div>
     );
