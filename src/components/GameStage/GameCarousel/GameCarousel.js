@@ -2,7 +2,7 @@ import React, { useEffect, useState, createRef } from 'react';
 import { Carousel } from 'react-bootstrap';
 import './GameCarousel.css';
 
-var image = require('../../assets/Bigscreen_Screenshot.png');
+var image = require('../../../assets/Bigscreen_Screenshot.png');
 
 const GameCarousel = (props) => {
   // const numGames = props.games.length;
@@ -24,12 +24,13 @@ const GameCarousel = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   console.log(selectedIndex);
+  console.log(props);
 
   useEffect(() => {
     console.log(selectedIndex);
-    console.log(props.games[selectedIndex].name);
+    console.log(props.games[selectedIndex].gameInfo.name);
     document
-      .getElementById(props.games[selectedIndex].name)
+      .getElementById(props.games[selectedIndex].gameInfo.name)
       .scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -76,8 +77,8 @@ const GameCarousel = (props) => {
 
   let gameCards = props.games.map((game, i) => {
     return (
-      <div key={i} id={game.name}>
-        {game.name}
+      <div key={i} id={game.gameInfo.name} className="card">
+        {game.gameInfo.name}
       </div>
     );
   });
