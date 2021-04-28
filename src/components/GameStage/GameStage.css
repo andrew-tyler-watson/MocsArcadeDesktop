@@ -1,4 +1,9 @@
-.selected-game-container {
-  min-height: 55vh;
-  background-color: chocolate;
+.game-details-container {
+  padding: 20px;
+  height: 55vh;
+  max-height: 55vh;
+}
+
+.game-details-column {
+  max-height: inherit;
 }
