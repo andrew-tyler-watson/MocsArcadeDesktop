@@ -1,54 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
+import styles from './GameDetails.css';
 
 const GameDetails = (props) => {
   console.log(props.game.gameInfo.imageUrl);
   console.log(props.game.gameInfo.videoUrl);
 
-  const [shouldFocus, setShouldFocus] = useState(false);
+  var description = null;
+  var gamepreview = null;
+  var authorInfo = null;
 
-  let handleArrows = (event) => {
-    // left arrow
-    //console.log(event);
-    if (event.keyCode === 37) {
-      var newIndex =
-        selectedIndex - 1 == -1 ? props.games.length - 1 : selectedIndex - 1;
-      setSelectedIndex(newIndex);
-    }
-    //right arrow
-    else if (event.keyCode === 39) {
-      setSelectedIndex(Math.abs(selectedIndex + 1) % props.games.length);
-    } else if (event.keyCode === 40) {
-      props.handleDownArrow();
-    }
-  };
+  var focusables = [description, gamepreview, authorInfo];
 
   useEffect(() => {
-    if (shouldFocus) {
-      window.addEventListener('focus', function () {
-        console.log('window focused');
-        console.log(slider);
-        slider.focus();
-      });
-      window.addEventListener(
-        'keydown',
-        function (e) {
-          if (
-            [
-              'Space',
-              'ArrowUp',
-              'ArrowDown',
-              'ArrowLeft',
-              'ArrowRight',
-            ].indexOf(e.code) > -1
-          ) {
-            e.preventDefault();
-          }
-        },
-        false
-      );
+    if (props.shouldFocus) {
+      description.focus();
     }
-  }, [shouldFocus]);
+  });
+
+  var handleArrowsDetails = (event) => {
+    // console.log(`Handling arrows in carousel ${event.keyCode}`);
+    // console.log(`Carousel should focus  ${props.shouldFocus}`);
+
+    console.log(`Details scroll: ${description.scrollTop}`);
+
+    if (props.shouldFocus) {
+      console.log('details focus');
+      description.focus();
+      console.log(description);
+    }
+
+    if (props.shouldFocus) {
+      if (event.keyCode === 37) {
+        var newIndex =
+          selectedIndex - 1 == -1 ? props.games.length - 1 : selectedIndex - 1;
+        setSelectedIndex(newIndex);
+      }
+      //right arrow
+      else if (event.keyCode === 39) {
+        // go right
+      } else if (event.keyCode === 38) {
+        if (description.scrollTop !== 0) {
+          event.stopPropagation();
+        }
+      }
+    }
+  };
 
   return (
     <Row className="details-row">
@@ -58,8 +55,15 @@ const GameDetails = (props) => {
         </Col>
       </Row>
       <Row className="details-detail-row">
-        <Col className="col-3 description-column">
-          <p>{props.game.gameInfo.description}</p>
+        <Col
+          className="col-3 description-column"
+          onKeyDown={handleArrowsDetails}
+          tabIndex="-1"
+          ref={(div) => {
+            description = div;
+          }}
+        >
+          <div>{props.game.gameInfo.description}</div>
         </Col>
         <Col className="col-6 game-preview-container">
           <iframe src={props.game.gameInfo.videoUrl}></iframe>

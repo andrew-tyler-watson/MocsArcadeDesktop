@@ -3,7 +3,7 @@ import useAsyncEffect from 'use-async-effect';
 import { Container, Col, Row } from 'react-bootstrap';
 import GameStage from './GameStage/GameStage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
+import './Layout.css';
 import fetch from 'node-fetch';
 
 const Layout = (props) => {
@@ -29,7 +29,7 @@ const Layout = (props) => {
           <h1>Mocs Arcade</h1>
         </Col>
       </Row>
-      <Row className="carousel-row">
+      <Row className="stage-row">
         <Col>{state.datafetched && <GameStage state={state}></GameStage>}</Col>
       </Row>
     </Container>
