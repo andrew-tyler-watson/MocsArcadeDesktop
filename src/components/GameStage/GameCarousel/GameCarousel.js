@@ -1,9 +1,6 @@
 import React, { useEffect, useState, createRef } from 'react';
-import { Carousel } from 'react-bootstrap';
 import './GameCarousel.css';
 import GameCard from '../GameCard/GameCard';
-
-var image = require('../../../assets/Bigscreen_Screenshot.png');
 
 const GameCarousel = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);

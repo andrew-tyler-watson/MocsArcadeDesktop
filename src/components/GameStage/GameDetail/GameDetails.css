@@ -3,6 +3,11 @@
   overflow-y: auto;
 }
 
+.author-column {
+  height: inherit;
+  overflow-y: auto;
+}
+
 .details-row {
   height: 100%;
   max-height: inherit;

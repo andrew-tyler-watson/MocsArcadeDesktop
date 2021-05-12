@@ -10,11 +10,11 @@ const GameDetails = (props) => {
   var gamepreview = null;
   var authorInfo = null;
 
-  var focusables = [description, gamepreview, authorInfo];
+  var focusables = [];
 
   useEffect(() => {
     if (props.shouldFocus) {
-      description.focus();
+      focusables[0].focus();
     }
   });
 
@@ -22,25 +22,25 @@ const GameDetails = (props) => {
     // console.log(`Handling arrows in carousel ${event.keyCode}`);
     // console.log(`Carousel should focus  ${props.shouldFocus}`);
 
-    console.log(`Details scroll: ${description.scrollTop}`);
+    console.log(`Details scroll: ${focusables[0].scrollTop}`);
 
     if (props.shouldFocus) {
-      console.log('details focus');
-      description.focus();
-      console.log(description);
-    }
-
-    if (props.shouldFocus) {
-      if (event.keyCode === 37) {
-        var newIndex =
-          selectedIndex - 1 == -1 ? props.games.length - 1 : selectedIndex - 1;
-        setSelectedIndex(newIndex);
-      }
-      //right arrow
-      else if (event.keyCode === 39) {
-        // go right
+      if (event.keyCode === 39) {
+        event.stopPropagation();
       } else if (event.keyCode === 38) {
-        if (description.scrollTop !== 0) {
+        if (focusables[0].scrollTop !== 0) {
+          event.stopPropagation();
+        }
+      }
+    }
+  };
+
+  var handleArrowsAuthor = (event) => {
+    if (props.shouldFocus) {
+      if (event.keyCode === 39) {
+        event.stopPropagation();
+      } else if (event.keyCode === 38) {
+        if (focusables[0].scrollTop !== 0) {
           event.stopPropagation();
         }
       }
@@ -60,7 +60,7 @@ const GameDetails = (props) => {
           onKeyDown={handleArrowsDetails}
           tabIndex="-1"
           ref={(div) => {
-            description = div;
+            focusables.push(div);
           }}
         >
           <div>{props.game.gameInfo.description}</div>
@@ -68,8 +68,8 @@ const GameDetails = (props) => {
         <Col className="col-6 game-preview-container">
           <iframe src={props.game.gameInfo.videoUrl}></iframe>
         </Col>
-        <Col className="col-3">
-          <p>Author Info</p>
+        <Col className="col-3 author-column">
+          <div>Author Info</div>
         </Col>
       </Row>
     </Row>
