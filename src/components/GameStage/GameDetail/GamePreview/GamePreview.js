@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function GamePreview(props) {
   const preview =
-    props.preview.type.toLower() === 'video' ? (
+    props.preview.type.toLowerCase() === 'video' ? (
       <iframe src={props.preview.url}></iframe>
     ) : (
-      <img src={props.preview.url} />
+      <img style={{ width: 'auto', height: '100%' }} src={props.preview.url} />
     );
 
-  return <div>{preview}</div>;
+  return <div id={props.preview.url}>{preview}</div>;
 }

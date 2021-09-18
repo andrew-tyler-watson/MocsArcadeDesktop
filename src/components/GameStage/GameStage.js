@@ -9,11 +9,6 @@ const GameStage = (props) => {
   const [focusElement, setFocusElement] = useState('carousel');
 
   useEffect(() => {
-    console.log('Game stage use effect');
-    console.log(props);
-  });
-
-  useEffect(() => {
     if (focusElement === 'details') {
       return;
     }
@@ -24,16 +19,12 @@ const GameStage = (props) => {
           e.code
         ) > -1
       ) {
-        console.log(
-          '----------running keydown event listener-----------------'
-        );
         if (focusElement !== 'details') {
           e.preventDefault();
         }
       }
     }
 
-    console.log('adding listener to window');
     window.addEventListener('keydown', preventDefault, false);
 
     return () => {
@@ -51,11 +42,11 @@ const GameStage = (props) => {
   var handleArrows = (event) => {
     // left arrow
     //console.log(event);
+    console.log(`Handling arrows in stage ${event.keyCode}`);
     if (event.keyCode === 40) {
-      console.log(`stage down arrow - ${focusElement}`);
       setFocusElement('details');
     } else if (event.keyCode === 38) {
-      console.log(`stage up arrow - ${focusElement}`);
+      console.log('setting carousel to focus');
       setFocusElement('carousel');
     }
   };
