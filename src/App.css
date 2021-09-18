@@ -8,14 +8,25 @@ body {
 }
 
 .app-container {
-  height: 100%;
+  height: 100vh !important;
   width: 95%;
 }
 
 .app-header {
-  height: 20%;
+  height: 10vh;
 }
 
-.carousel-container {
-  height: 80%;
+img {
+  max-width: 100%;
+  height: auto;
+}
+iframe {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+.game-preview-container {
+  width: 100%;
+  height: 100%;
 }

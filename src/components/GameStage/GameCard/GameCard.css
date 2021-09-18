@@ -1,0 +1,13 @@
+.game-card-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.game-card-title {
+  font-size: 1em;
+}
+
+.game-card-selected {
+  border: solid yellow 2px;
+  padding: 10px;
+}

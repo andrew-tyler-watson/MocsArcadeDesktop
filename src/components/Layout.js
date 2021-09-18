@@ -1,27 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import useAsyncEffect from 'use-async-effect';
 import { Container, Col, Row } from 'react-bootstrap';
-import GameCarousel from './Game/GameCarousel';
+import GameStage from './GameStage/GameStage';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
+import './Layout.css';
+import fetch from 'node-fetch';
 
-const Layout = () => {
-  const games = [
-    { name: 'Game 1' },
-    { name: 'Game 2' },
-    { name: 'Game 3' },
-    { name: 'Game 4' },
-    { name: 'Game 5' },
-    { name: 'Game 6' },
-    { name: 'Game 7' },
-    { name: 'Game 8' },
-    { name: 'Game 9' },
-    { name: 'Game 10' },
-    { name: 'Game 11' },
-    { name: 'Game 12' },
-    { name: 'Game 13' },
-    { name: 'Game 14' },
-    { name: 'Game 15' },
-  ];
+const Layout = (props) => {
+  // const games = props.gameService.getGames();
+  // console.log(games);\
+
+  const [state, setState] = useState({ games: null, datafetched: false });
+
+  useAsyncEffect(async (isMounted) => {
+    const data = await fetch('http://localhost:8081/api/games', {
+      mode: 'cors',
+    }).then((res) => res.json());
+    if (!isMounted()) return;
+    console.log(data);
+    setState({ games: data, datafetched: true });
+  }, []);
 
   return (
     <Container className="app-container" fluid>
@@ -31,17 +29,8 @@ const Layout = () => {
           <h1>Mocs Arcade</h1>
         </Col>
       </Row>
-      <Row className="carousel-container">
-        <Col>
-          <GameCarousel games={games}></GameCarousel>
-        </Col>
-      </Row>
-      <Row className="selected-game-container">
-        <Col>
-          <div>
-            <label>Title: </label>
-          </div>
-        </Col>
+      <Row className="stage-row">
+        <Col>{state.datafetched && <GameStage state={state}></GameStage>}</Col>
       </Row>
     </Container>
   );

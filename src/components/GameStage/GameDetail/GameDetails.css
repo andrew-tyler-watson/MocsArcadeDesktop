@@ -1,0 +1,26 @@
+.description-column {
+  height: inherit;
+  overflow-y: auto;
+}
+
+.author-column {
+  height: inherit;
+  overflow-y: auto;
+}
+
+.details-row {
+  height: 100%;
+  max-height: inherit;
+}
+
+.details-title-row {
+  height: 10%;
+  width: 100%;
+  text-align: center;
+}
+
+.details-detail-row {
+  height: 90%;
+  max-height: inherit;
+  width: 100%;
+}
