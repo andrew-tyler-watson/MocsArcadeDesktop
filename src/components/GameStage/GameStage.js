@@ -30,14 +30,7 @@ const GameStage = (props) => {
     return () => {
       window.removeEventListener('keydown', preventDefault);
     };
-    // window.addEventListener('focus', function () {
-    //   console.log('window focused');
-    //   console.log(slider);
-    //   slider.focus();
-    // });
   }, [focusElement]);
-
-  var refocus = (event) => {};
 
   var handleArrows = (event) => {
     // left arrow
@@ -55,11 +48,11 @@ const GameStage = (props) => {
     <div onKeyDown={handleArrows}>
       <Row className="carousel-row">
         <Col>
-          {props.state.datafetched && (
+          {props.games && (
             <div className="carousel-container">
               <GameCarousel
                 shouldFocus={focusElement === 'carousel'}
-                games={props.state.games}
+                games={props.games}
                 setSelectedGame={setSelectedGame}
               ></GameCarousel>
             </div>
