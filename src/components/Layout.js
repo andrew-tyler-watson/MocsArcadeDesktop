@@ -1,32 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import useAsyncEffect from 'use-async-effect';
-import { ajax } from 'rxjs/ajax';
+import React from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
-import GameStage from './GameStage/GameStage';
 import { useObservable } from '../utilities/customHooks.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import GameService from '../services/game-service';
+import LibraryService from '../services/library-service';
+import GameStage from './GameStage/GameStage';
 import './Layout.css';
-import fetch from 'node-fetch';
+
+const libraryService = new LibraryService();
+const gameService = new GameService();
+const games$ = gameService.getGames();
 
 const Layout = (props) => {
   // const games = props.gameService.getGames();
   // console.log(games);
 
   // const [state, setState] = useState({ games: null, datafetched: false });
-  const gamesEndPoint = 'http://localhost:8081/api/games';
 
-  const games$ = ajax.getJSON(gamesEndPoint);
+  var library = [];
+
+  games$.subscribe((games) => {
+    library = libraryService.buildGameDirectoryLists(
+      games.find((x) => {
+        return x.gameInfo.name === 'Cubix';
+      }),
+      'C:Users\\andre\\source\\repos\\MocsArcadeDesktop\\Library'
+    );
+    console.log(JSON.stringify(library));
+  });
 
   const games = useObservable(games$);
-
-  // useAsyncEffect(async (isMounted) => {
-  //   const data = await fetch('http://localhost:8081/api/games', {
-  //     mode: 'cors',
-  //   }).then((res) => res.json());
-  //   if (!isMounted()) return;
-  //   console.log(data);
-  //   setState({ games: data, datafetched: true });
-  // }, []);
 
   return (
     <Container className="app-container" fluid>
