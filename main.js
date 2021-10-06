@@ -1,9 +1,16 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+
+const LibraryManager = require('./main_src/library-manager');
+
+const libraryManager = new LibraryManager();
+
+ipcMain.on('download', (event, arg) => {
+  event.reply('downloadComplete', libraryManager.downloadGame(...[arg]));
+});
 
 let mainWindow;
-let data;
 
 let isDev = false;
 if (
