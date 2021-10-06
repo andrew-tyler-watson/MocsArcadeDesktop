@@ -7,9 +7,10 @@ const PreviewCarousel = (props) => {
 
   useEffect(() => {
     if (props.shouldFocus) {
-      const selectedCard = document.getElementById(
-        props.previews[selectedIndex].url
-      );
+      const previewId = props.previews[selectedIndex].driveId
+        ? props.previews[selectedIndex].driveId
+        : props.previews[selectedIndex].url;
+      const selectedCard = document.getElementById(previewId);
 
       selectedCard.scrollIntoView({
         behavior: 'smooth',
