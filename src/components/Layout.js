@@ -8,29 +8,14 @@ import LibraryService from '../services/library-service';
 import GameStage from './GameStage/GameStage';
 import './Layout.css';
 
-const libraryService = new LibraryService();
-const gameService = new GameService();
-const games$ = gameService.getGames();
-
 const Layout = (props) => {
   // const games = props.gameService.getGames();
   // console.log(games);
 
   // const [state, setState] = useState({ games: null, datafetched: false });
 
-  var library = [];
-
-  games$.subscribe((games) => {
-    library = libraryService.buildGameDirectoryLists(
-      games.find((x) => {
-        return x.gameInfo.name === 'Cubix';
-      }),
-      'C:Users\\andre\\source\\repos\\MocsArcadeDesktop\\Library'
-    );
-    console.log(JSON.stringify(library));
-  });
-
-  const games = useObservable(games$);
+  const games = useObservable(props.services.gameService.games$);
+  const libraryEntries = useObservable(props.services.LibraryService.entries$);
 
   return (
     <Container className="app-container" fluid>
@@ -42,7 +27,11 @@ const Layout = (props) => {
       </Row>
       <Row className="stage-row">
         <Col>
-          <GameStage games={games}></GameStage>
+          <GameStage
+            games={games}
+            libraryEntries={libraryEntries}
+            {...props}
+          ></GameStage>
         </Col>
       </Row>
     </Container>
