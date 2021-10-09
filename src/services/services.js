@@ -6,7 +6,7 @@ export default class ServiceHub {
   gameService;
 
   constructor() {
-    this.libraryService = new LibraryService();
     this.gameService = new GameService();
+    this.libraryService = new LibraryService();
   }
 }

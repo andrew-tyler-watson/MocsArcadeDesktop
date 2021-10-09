@@ -11,6 +11,7 @@
 .details-row {
   height: 100%;
   max-height: inherit;
+  width: 100%;
 }
 
 .details-title-row {
@@ -23,4 +24,16 @@
   height: 90%;
   max-height: inherit;
   width: 100%;
+}
+
+.details-action-button-row {
+  width: 100%;
+}
+
+.game-button {
+  background-color: black;
+  border: solid 2px rgb(124, 255, 36);
+  color: rgb(124, 255, 36);
+  width: 100%;
+  height: 45px;
 }

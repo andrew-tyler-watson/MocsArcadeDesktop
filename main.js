@@ -6,8 +6,13 @@ const LibraryManager = require('./main_src/library-manager');
 
 const libraryManager = new LibraryManager();
 
-ipcMain.on('download', (event, arg) => {
-  event.reply('downloadComplete', libraryManager.downloadGame(...[arg]));
+ipcMain.on('download', (event, args) => {
+  console.log(`The arguments ${JSON.stringify(args)}`);
+  event.reply('downloadComplete', libraryManager.downloadGame(...args));
+});
+
+ipcMain.on('requestLibraryPath', (event) => {
+  event.reply('requestLibraryPathResponse', libraryManager.getLibraryPath());
 });
 
 let mainWindow;

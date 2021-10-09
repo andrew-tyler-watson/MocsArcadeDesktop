@@ -7,6 +7,9 @@ import GamePreview from './GamePreview/GamePreview';
 const GameDetails = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [focusElement, setFocusElement] = useState('description');
+  const [entry, setEntry] = useState(
+    props.services.libraryService.buildLibraryEntry(props.game)
+  );
 
   var focusables = [];
   const focusStrings = ['description', 'previews', 'authorInfo'];
@@ -47,17 +50,54 @@ const GameDetails = (props) => {
   //   shouldFocus={false}
   // ></PreviewCarousel>
 
-  const previewContent = props.game.gameInfo.previews ? (
-    <PreviewCarousel
-      previews={props.game.gameInfo.previews}
-      shouldFocus={focusElement === 'previews' && props.shouldFocus}
-    ></PreviewCarousel>
-  ) : (
-    <iframe src={props.game.gameInfo.videoUrl}></iframe>
-  );
+  const previewContent =
+    props.game.gameplayPreviews.length > 0 ? (
+      <PreviewCarousel
+        previews={props.game.gameplayPreviews}
+        shouldFocus={focusElement === 'previews' && props.shouldFocus}
+      ></PreviewCarousel>
+    ) : (
+      <iframe src={props.game.gameInfo.videoUrl}></iframe>
+    );
+
+  const renderPlayDownloadButton = () => {
+    const games = [];
+
+    if (!entry.isDownloaded) {
+      games.push(
+        <button onClick={downloadGame} className="game-button">
+          Download Game
+        </button>
+      );
+    } else if (entry.isDownloaded) {
+      games.push(<button className="game-button">Launch Game</button>);
+    }
+
+    return games;
+  };
+
+  const downloadGame = () => {
+    const revision = props.game.revisionHistory.revisions.find((x) => {
+      return props.game.revisionHistory.latestStableVersion == x.version;
+    });
+
+    props.services.libraryService
+      .downloadGame(props.game, revision, () => {})
+      .subscribe({
+        next(r) {
+          setEntry(props.services.libraryService.buildLibraryEntry(props.game));
+        },
+        error(err) {
+          console.log(err.toString());
+        },
+      });
+  };
 
   return (
-    <div onKeyDown={handleArrowsVerticalScrollDiv}>
+    <div
+      className="d-flex justify-content-center"
+      onKeyDown={handleArrowsVerticalScrollDiv}
+    >
       <Row className="details-row">
         <Row className="details-title-row">
           <Col>
@@ -90,6 +130,11 @@ const GameDetails = (props) => {
             }}
           >
             <div>Author Info</div>
+          </Col>
+        </Row>
+        <Row className="details-action-button-row">
+          <Col className="col-12 justify-content-center">
+            {renderPlayDownloadButton()}
           </Col>
         </Row>
       </Row>

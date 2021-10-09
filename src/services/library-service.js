@@ -4,50 +4,97 @@ var path = require('path');
 import { ReplaySubject } from 'rxjs';
 import { ipcRenderer } from 'electron';
 import { Observable } from 'rxjs';
-import { LibraryEntry } from '../models/libraryEntry'
+import { LibraryEntry } from '../models/libraryEntry';
 
 export default class LibraryService {
-  libraryEntries$ = new ReplaySubject(1);
+  libraryPath = '';
+  downloadEmitter$ = new ReplaySubject(1);
+  downloadProgressEmitter$ = new ReplaySubject(1);
 
-  constructor(games) {
-    this.buildLibraryEntries(games).subscribe(this.libraryEntries$);
+  constructor() {
+    if (this.doesLibraryExist()) {
+      fs.mkdir(this.libraryPath);
+    }
+
+    this.subscribeEmitters();
+
+    ipcRenderer.send('requestLibraryPath');
   }
 
-  isGameDownloaded(game) {}
+  doesLibraryExist() {
+    return fs.existsSync(this.libraryPath);
+  }
 
-  isLatestRequiredVersionDownloaded(game) {}
+  isGameDownloaded(gameName) {
+    const gamePath = path.resolve(this.libraryPath, gameName);
+    fs.access(gamePath, function (error) {
+      if (error) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
 
-  isBetaVersionDownloaded(game) {}
-
-  folderExists(path) {}
-
-  downloadGame(game, revision, callback) {
+  downloadGame(game, revision) {
     const gameUrl = this.getGoogleDriveDownloadUrl(revision.fileId);
-    const outputPath = this.getLibraryOutputPath(game, revision);
-    return new Observable((observer) => {
-      this.ipcRenderer.on('downloadComplete', (event, arg) => {
-        callback(arg);
+    const args = [gameUrl, game.gameInfo.name, revision.version];
+
+    return new Observable((subscriber) => {
+      ipcRenderer.once('downloadComplete', (event, args) => {
+        subscriber.next('complete');
       });
 
-      ipcRenderer.send('download', gameUrl);
+      ipcRenderer.send('download', args);
+    });
+  }
+
+  getLibraryEntries(games) {
+    const entries = games.map((x) => {
+      return this.buildLibraryEntry(x);
+    });
+    return new Observable((subscriber) => {
+      subscriber.next(entries);
     });
   }
 
   buildLibraryEntry(game) {
     const entry = new LibraryEntry();
+    entry.gameName = game.gameInfo.name;
+    entry.isDownloaded = this.isGameDownloaded(game.gameInfo.name);
 
-    entry.revisions = this.getLibraryEntryRevisions(game.gameInfo.name)
+    if (!entry.isDownloaded) {
+      return entry;
+    }
 
-    entry.isDownloaded = entry.revisions.
+    entry.revisions = this.getLibraryEntryRevisions(game.gameInfo.name);
 
+    entry.isLatestStableVersionDownloaded =
+      entry.revisions.filter((x) => {
+        x.name == game.revisionHistory.latestStableRelease;
+      }).length > 0;
+    entry.isUpdateRequired = !entry.isLatestRequiredVersionDownloaded;
+    entry.launchScriptPath = path.resolve(
+      __dirname,
+      'library',
+      gameName,
+      game.revisionHistory.latestStableRelease
+    );
+
+    return entry;
   }
 
-  getLibraryEntryRevisions(gameName){
-    const homeDir = path.resolve(__dirname, 'library', gameName);
+  getLibraryEntryRevisions(gameName) {
+    const homeDir = path.resolve(this.libraryPath, gameName);
 
-    return fs.readdir(homeDir).filter((file) => {
-      return fs.stat(path.resolve(homeDir, file)).isDirectory();
-    }).map(folder => { return { revision: folder.name }});
+    return fs
+      .readdir(homeDir)
+      .filter((file) => {
+        return fs.stat(path.resolve(homeDir, file)).isDirectory();
+      })
+      .map((folder) => {
+        return { revision: folder.name };
+      });
   }
 
   checkGame(game, gamesHomeDir) {
@@ -73,15 +120,23 @@ export default class LibraryService {
   }
 
   getLibraryOutputPath(game, revision) {
-    return path.join(
-      __dirname,
-      'library',
-      game.gameInfo.name,
-      revision.version
-    );
+    return path.join(this.libraryPath, game.gameInfo.name, revision.version);
   }
 
   getGoogleDriveDownloadUrl(fileId) {
     return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  }
+
+  subscribeEmitters() {
+    ipcRenderer.on('downloadComplete', (event, args) => {
+      this.downloadEmitter$.next(...args);
+    });
+    ipcRenderer.on('downloadProgress', (event, args) => {
+      this.downloadProgressEmitter$.next(...args);
+    });
+    ipcRenderer.on('requestLibraryPathResponse', (event, args) => {
+      console.log(`Getting the library dir ${args}`);
+      this.libraryPath = args;
+    });
   }
 }
