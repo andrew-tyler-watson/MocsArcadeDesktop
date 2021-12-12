@@ -1,13 +1,11 @@
 export class LibraryEntry {
-  isDownloaded;
-  isRequiredDownloaded;
-  isUpdateRequired;
-  canUpdate;
+  isDownloaded = false;
+  isUpdateAvailable = false;
+  installPath = '';
+  gameId = -1;
+  playableVersions = [];
 
-  launchScriptPath;
-
-  gameName;
-  revisions;
-
-  constructor() {}
+  constructor(gameId) {
+    gameId = gameId;
+  }
 }

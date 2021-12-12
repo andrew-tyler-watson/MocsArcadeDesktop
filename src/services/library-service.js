@@ -19,6 +19,9 @@ export default class LibraryService {
     this.subscribeEmitters();
 
     ipcRenderer.send('requestLibraryPath');
+    this.downloadProgressEmitter$.subscribe((r) => {
+      console.log(`Download progress: ${r}`);
+    });
   }
 
   doesLibraryExist() {
@@ -37,15 +40,25 @@ export default class LibraryService {
   }
 
   downloadGame(game, revision) {
-    const gameUrl = this.getGoogleDriveDownloadUrl(revision.fileId);
-    const args = [gameUrl, game.gameInfo.name, revision.version];
+    // const gameUrl = this.getDownloadUrl(game, revision);
+
+    // console.log(`The game: ${JSON.stringify(game)}`);
+    // console.log(`The revision: ${JSON.stringify(revision)}`);
+    // console.log(`The url: ${gameUrl}`);
+    // const args = [game.gameInfo.name];
 
     return new Observable((subscriber) => {
+      ipcRenderer.on('downloadProgress', (event, args) => {
+        subscriber.next({
+          response: 'progress',
+          percent: args,
+        });
+      });
       ipcRenderer.once('downloadComplete', (event, args) => {
-        subscriber.next('complete');
+        subscriber.next({ response: 'complete' });
       });
 
-      ipcRenderer.send('download', args);
+      ipcRenderer.send('downloadItch', ['Short Circuit', 1086325]);
     });
   }
 
@@ -123,20 +136,25 @@ export default class LibraryService {
     return path.join(this.libraryPath, game.gameInfo.name, revision.version);
   }
 
+  getDownloadUrl(game, revision) {
+    if (game.isGoogleDriveDownload !== undefined) {
+      return this.getGoogleDriveDownloadUrl(revision.fileId);
+    }
+    return revision.url;
+  }
+
   getGoogleDriveDownloadUrl(fileId) {
     return `https://drive.google.com/uc?export=download&id=${fileId}`;
   }
 
   subscribeEmitters() {
-    ipcRenderer.on('downloadComplete', (event, args) => {
-      this.downloadEmitter$.next(...args);
-    });
-    ipcRenderer.on('downloadProgress', (event, args) => {
-      this.downloadProgressEmitter$.next(...args);
-    });
-    ipcRenderer.on('requestLibraryPathResponse', (event, args) => {
-      console.log(`Getting the library dir ${args}`);
-      this.libraryPath = args;
-    });
+    // ipcRenderer.on('downloadProgress', (event, args) => {
+    //   this.downloadProgressEmitter$.next(args);
+    //   console.log(args);
+    // });
+    // ipcRenderer.on('requestLibraryPathResponse', (event, args) => {
+    //   console.log(`Getting the library dir ${args}`);
+    //   this.libraryPath = args;
+    // });
   }
 }

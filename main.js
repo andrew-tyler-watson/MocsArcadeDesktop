@@ -4,11 +4,28 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 
 const LibraryManager = require('./main_src/library-manager');
 
-const libraryManager = new LibraryManager();
+const libraryManager = new LibraryManager(
+  'vDc2ysBDSEbdu7iIfc60Idaw1j2a2SB8WqV8ljXE'
+);
 
 ipcMain.on('download', (event, args) => {
-  console.log(`The arguments ${JSON.stringify(args)}`);
-  event.reply('downloadComplete', libraryManager.downloadGame(...args));
+  const progressUpdater = (progress) => {
+    event.reply('downloadProgress', progress);
+  };
+  event.reply(
+    'downloadComplete',
+    libraryManager.downloadGame(...args, progressUpdater)
+  );
+});
+
+ipcMain.on('downloadItch', (event, args) => {
+  const progressUpdater = (progress) => {
+    event.reply('downloadProgress', progress);
+  };
+  event.reply(
+    'downloadComplete',
+    libraryManager.downloadItchGame(...args, progressUpdater)
+  );
 });
 
 ipcMain.on('requestLibraryPath', (event) => {

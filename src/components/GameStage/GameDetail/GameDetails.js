@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { throttle } from 'rxjs/operators';
+import { interval } from 'rxjs';
 import { Container, Col, Row } from 'react-bootstrap';
 import styles from './GameDetails.css';
 import PreviewCarousel from './PreviewCarousel/PreviewCarousel.js';
@@ -10,6 +12,8 @@ const GameDetails = (props) => {
   const [entry, setEntry] = useState(
     props.services.libraryService.buildLibraryEntry(props.game)
   );
+  const [progress, setProgress] = useState(0.0);
+  const [downloading, setDownloading] = useState(false);
 
   var focusables = [];
   const focusStrings = ['description', 'previews', 'authorInfo'];
@@ -62,6 +66,15 @@ const GameDetails = (props) => {
 
   const renderPlayDownloadButton = () => {
     const games = [];
+    if (downloading) {
+      games.push(
+        <div className="progress-bar d-flex">
+          {progress}%<div className="progress-bar-fill"></div>
+        </div>
+      );
+
+      return games;
+    }
 
     if (!entry.isDownloaded) {
       games.push(
@@ -77,20 +90,35 @@ const GameDetails = (props) => {
   };
 
   const downloadGame = () => {
+    setDownloading(true);
+
     const revision = props.game.revisionHistory.revisions.find((x) => {
       return props.game.revisionHistory.latestStableVersion == x.version;
     });
 
-    props.services.libraryService
-      .downloadGame(props.game, revision, () => {})
-      .subscribe({
-        next(r) {
+    var observer = {
+      next(r) {
+        if (r.response === 'progress') {
+          setProgress(r.percent);
+        } else if (r.response === 'complete') {
           setEntry(props.services.libraryService.buildLibraryEntry(props.game));
-        },
-        error(err) {
-          console.log(err.toString());
-        },
-      });
+          console.log('setting to false in next');
+          setDownloading(false);
+        }
+      },
+      error(err) {
+        console.log(err.toString());
+        console.log('setting to false in error');
+        setDownloading(false);
+      },
+    };
+
+    var observable = props.services.libraryService.downloadGame(
+      props.game,
+      revision
+    );
+
+    observable.subscribe(observer);
   };
 
   return (
