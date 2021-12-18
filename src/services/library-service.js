@@ -24,6 +24,10 @@ export default class LibraryService {
     });
   }
 
+  addLibraryEntries(games) {
+    ipcRenderer.send('get');
+  }
+
   doesLibraryExist() {
     return fs.existsSync(this.libraryPath);
   }
@@ -55,10 +59,14 @@ export default class LibraryService {
         });
       });
       ipcRenderer.once('downloadComplete', (event, args) => {
+        console.log(`received complete event: ${args}`);
         subscriber.next({ response: 'complete' });
       });
 
-      ipcRenderer.send('downloadItch', ['Short Circuit', 1086325]);
+      ipcRenderer.send('downloadItch', [
+        game.gameInfo.itchId,
+        game.gameInfo.name,
+      ]);
     });
   }
 

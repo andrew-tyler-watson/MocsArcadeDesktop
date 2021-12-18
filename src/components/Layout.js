@@ -12,6 +12,7 @@ const Layout = (props) => {
   // const [state, setState] = useState({ games: null, datafetched: false });
 
   const games = useObservable(props.services.gameService.games$);
+  console.log(games);
 
   return (
     <Container className="app-container" fluid>

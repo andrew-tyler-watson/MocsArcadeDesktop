@@ -9,9 +9,7 @@ import GamePreview from './GamePreview/GamePreview';
 const GameDetails = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [focusElement, setFocusElement] = useState('description');
-  const [entry, setEntry] = useState(
-    props.services.libraryService.buildLibraryEntry(props.game)
-  );
+
   const [progress, setProgress] = useState(0.0);
   const [downloading, setDownloading] = useState(false);
 
@@ -68,7 +66,7 @@ const GameDetails = (props) => {
     const games = [];
     if (downloading) {
       games.push(
-        <div className="progress-bar d-flex">
+        <div className="progress-bar d-flex" key="progress">
           {progress}%<div className="progress-bar-fill"></div>
         </div>
       );
@@ -76,14 +74,23 @@ const GameDetails = (props) => {
       return games;
     }
 
-    if (!entry.isDownloaded) {
+    if (!props.game.libraryEntry.isDownloaded) {
       games.push(
-        <button onClick={downloadGame} className="game-button">
+        <button onClick={downloadGame} className="game-button" key="download">
           Download Game
         </button>
       );
-    } else if (entry.isDownloaded) {
-      games.push(<button className="game-button">Launch Game</button>);
+    } else if (props.game.libraryEntry.isDownloaded) {
+      games.push(
+        <button className="game-button" key="launch">
+          Launch Game
+        </button>
+      );
+      games.push(
+        <button className="game-button" key="launch">
+          Uninstall
+        </button>
+      );
     }
 
     return games;
@@ -101,7 +108,6 @@ const GameDetails = (props) => {
         if (r.response === 'progress') {
           setProgress(r.percent);
         } else if (r.response === 'complete') {
-          setEntry(props.services.libraryService.buildLibraryEntry(props.game));
           console.log('setting to false in next');
           setDownloading(false);
         }

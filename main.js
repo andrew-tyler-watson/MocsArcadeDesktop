@@ -19,17 +19,25 @@ ipcMain.on('download', (event, args) => {
 });
 
 ipcMain.on('downloadItch', (event, args) => {
+  console.log(`the args: ${JSON.stringify(args)}`);
   const progressUpdater = (progress) => {
     event.reply('downloadProgress', progress);
   };
-  event.reply(
-    'downloadComplete',
-    libraryManager.downloadItchGame(...args, progressUpdater)
-  );
+
+  return libraryManager.downloadItchGame(...args, progressUpdater).then((r) => {
+    event.reply('downloadComplete', 'Success');
+  });
 });
 
 ipcMain.on('requestLibraryPath', (event) => {
   event.reply('requestLibraryPathResponse', libraryManager.getLibraryPath());
+});
+
+ipcMain.on('BuildLibraryEntries', (event, args) => {
+  libraryManager.buildLibraryEntries(...args).then((r) => {
+    console.log(`The output: ${console.log(JSON.stringify(r))}`);
+    event.reply('BuildLibraryEntriesResponse', r);
+  });
 });
 
 let mainWindow;
