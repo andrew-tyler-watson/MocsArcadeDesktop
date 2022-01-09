@@ -1,8 +1,8 @@
 import { flatMap } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { ipcRenderer } from 'electron';
-import IpcRequests from '../../messages/IpcRequests';
-import IpcResponses from '../../messages/IpcResponses';
+import IpcRequest from '../../messages/IpcRequest';
+import IpcResponse from '../../messages/IpcResponse';
 import { Observable } from 'rxjs';
 
 export default class GameServiceProxy {
@@ -11,16 +11,26 @@ export default class GameServiceProxy {
 
   constructor() {}
 
+  /**
+   * gets games with library entries
+   * @returns {Observable}
+   */
+
   getGames() {
     return ajax
       .getJSON(this.gamesUrl)
       .pipe(flatMap((games) => this.addLibraryEntries(games)));
   }
 
+  /**
+   * Returns an observable that emits a list of games with library entries added
+   * @param {Games[]} games a list of games to get library entries for
+   * @returns {Observable<Game[]>} emits a list of games with library entry added
+   */
   addLibraryEntries(games) {
     return new Observable((subscriber) => {
       ipcRenderer.once(
-        IpcResponses.BuildLibraryEntriesResponse,
+        IpcResponse.BuildLibraryEntriesResponse,
         (event, args) => {
           const output = games.map((game) => ({
             ...game,
@@ -29,7 +39,7 @@ export default class GameServiceProxy {
           subscriber.next(output);
         }
       );
-      ipcRenderer.send(IpcRequests.BuildLibraryEntries, [
+      ipcRenderer.send(IpcRequest.BuildLibraryEntries, [
         games.map((x) => x.gameInfo.itchId),
       ]);
     });
