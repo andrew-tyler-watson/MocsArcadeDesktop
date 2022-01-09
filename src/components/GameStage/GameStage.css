@@ -2,6 +2,7 @@
   padding: 20px;
   height: 55vh;
   max-height: 55vh;
+  width: 100%;
 }
 
 .game-details-column {

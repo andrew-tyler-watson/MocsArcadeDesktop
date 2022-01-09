@@ -1,6 +1,7 @@
 import React, { useEffect, useState, createRef } from 'react';
 import './GameCarousel.css';
 import GameCard from '../GameCard/GameCard';
+import { LibraryEntry } from '../../../models/libraryEntry';
 
 const GameCarousel = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -27,6 +28,8 @@ const GameCarousel = (props) => {
       block: 'center',
       inline: 'center',
     });
+
+    console.log(props.games[selectedIndex].gameInfo);
   }
 
   let slider = null;

@@ -1,9 +1,46 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+
+const LibraryManager = require('./main_src/library-manager');
+
+const libraryManager = new LibraryManager(
+  'vDc2ysBDSEbdu7iIfc60Idaw1j2a2SB8WqV8ljXE'
+);
+
+ipcMain.on('download', (event, args) => {
+  const progressUpdater = (progress) => {
+    event.reply('downloadProgress', progress);
+  };
+  event.reply(
+    'downloadComplete',
+    libraryManager.downloadGame(...args, progressUpdater)
+  );
+});
+
+ipcMain.on('downloadItch', (event, args) => {
+  console.log(`the args: ${JSON.stringify(args)}`);
+  const progressUpdater = (progress) => {
+    event.reply('downloadProgress', progress);
+  };
+
+  return libraryManager.downloadItchGame(...args, progressUpdater).then((r) => {
+    event.reply('downloadComplete', 'Success');
+  });
+});
+
+ipcMain.on('requestLibraryPath', (event) => {
+  event.reply('requestLibraryPathResponse', libraryManager.getLibraryPath());
+});
+
+ipcMain.on('BuildLibraryEntries', (event, args) => {
+  libraryManager.buildLibraryEntries(...args).then((r) => {
+    console.log(`The output: ${console.log(JSON.stringify(r))}`);
+    event.reply('BuildLibraryEntriesResponse', r);
+  });
+});
 
 let mainWindow;
-let data;
 
 let isDev = false;
 if (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import GameCarousel from './GameCarousel/GameCarousel';
 import GameDetails from './GameDetail/GameDetails';
 import './GameStage.css';
@@ -8,6 +8,7 @@ const GameStage = (props) => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [focusElement, setFocusElement] = useState('carousel');
 
+  // change the focused element
   useEffect(() => {
     if (focusElement === 'details') {
       return;
@@ -30,48 +31,40 @@ const GameStage = (props) => {
     return () => {
       window.removeEventListener('keydown', preventDefault);
     };
-    // window.addEventListener('focus', function () {
-    //   console.log('window focused');
-    //   console.log(slider);
-    //   slider.focus();
-    // });
   }, [focusElement]);
-
-  var refocus = (event) => {};
-
+  // handle the arrows
   var handleArrows = (event) => {
     // left arrow
     //console.log(event);
-    console.log(`Handling arrows in stage ${event.keyCode}`);
     if (event.keyCode === 40) {
       setFocusElement('details');
     } else if (event.keyCode === 38) {
-      console.log('setting carousel to focus');
       setFocusElement('carousel');
     }
   };
 
   return (
-    <div onKeyDown={handleArrows}>
+    <div onKeyDown={handleArrows} className="flex-container p-0">
       <Row className="carousel-row">
         <Col>
-          {props.state.datafetched && (
+          {props.games && (
             <div className="carousel-container">
               <GameCarousel
                 shouldFocus={focusElement === 'carousel'}
-                games={props.state.games}
+                {...props}
                 setSelectedGame={setSelectedGame}
               ></GameCarousel>
             </div>
           )}
         </Col>
       </Row>
-      <Row className="game-details-container">
+      <Row className="game-details-container m-0">
         <Col className="game-details-column">
           {selectedGame && (
             <GameDetails
               shouldFocus={focusElement === 'details'}
               game={selectedGame}
+              {...props}
             ></GameDetails>
           )}
         </Col>
