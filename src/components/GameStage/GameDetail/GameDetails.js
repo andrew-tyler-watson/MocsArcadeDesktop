@@ -63,37 +63,37 @@ const GameDetails = (props) => {
     );
 
   const renderPlayDownloadButton = () => {
-    const games = [];
+    const buttons = [];
     if (downloading) {
-      games.push(
+      buttons.push(
         <div className="progress-bar d-flex" key="progress">
           {progress}%<div className="progress-bar-fill"></div>
         </div>
       );
 
-      return games;
+      return buttons;
     }
 
     if (!props.game.libraryEntry.isDownloaded) {
-      games.push(
+      buttons.push(
         <button onClick={downloadGame} className="game-button" key="download">
           Download Game
         </button>
       );
     } else if (props.game.libraryEntry.isDownloaded) {
-      games.push(
-        <button className="game-button" key="launch">
+      buttons.push(
+        <button className="game-button" key="launch" onClick={launchGame}>
           Launch Game
         </button>
       );
-      games.push(
-        <button className="game-button" key="launch">
+      buttons.push(
+        <button className="game-button" key="uninstall">
           Uninstall
         </button>
       );
     }
 
-    return games;
+    return buttons;
   };
 
   const downloadGame = () => {
@@ -123,6 +123,21 @@ const GameDetails = (props) => {
       props.game,
       revision
     );
+
+    observable.subscribe(observer);
+  };
+
+  const launchGame = () => {
+    var observer = {
+      next(r) {},
+      error(err) {
+        console.log(err.toString());
+        console.log('setting to false in error');
+        setDownloading(false);
+      },
+    };
+
+    var observable = props.services.libraryService.launchGame(props.game);
 
     observable.subscribe(observer);
   };

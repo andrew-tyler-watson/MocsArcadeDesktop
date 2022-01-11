@@ -38,4 +38,10 @@ export default class LibraryService {
       ]);
     });
   }
+
+  launchGame(game) {
+    return new Observable((subsrcriber) => {
+      ipcRenderer.send(IpcRequest.LaunchGame, [game.libraryEntry.caveId]);
+    });
+  }
 }

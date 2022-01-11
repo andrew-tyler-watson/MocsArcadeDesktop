@@ -24,6 +24,18 @@ class LibraryManager {
     }
   }
 
+  async launchItchGame(caveId) {
+    return new Promise((resolve, reject) => {
+      var client = this.makeClient().then((client) => {
+        console.log('launch game');
+        client.call(butlerd.createRequest('Launch'), {
+          caveId: caveId,
+          prereqsDir: '/prereqs',
+        });
+      });
+    });
+  }
+
   initDirectory(directory) {
     const theDir = path.join(this.libraryPath, directory);
     if (!fs.existsSync(theDir)) {
@@ -114,6 +126,7 @@ class LibraryManager {
     if (cave) {
       output.isDownloaded = true;
       output.installPath = cave.installInfo.installPath;
+      output.caveId = cave.id;
     } else {
       output.isDownloaded = false;
     }

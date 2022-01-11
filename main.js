@@ -40,6 +40,12 @@ ipcMain.on('BuildLibraryEntries', (event, args) => {
   });
 });
 
+ipcMain.on('launchGame', (event, args) => {
+  libraryManager.launchItchGame(...args).then((r) => {
+    console.log('game launched');
+  });
+});
+
 let mainWindow;
 
 let isDev = false;

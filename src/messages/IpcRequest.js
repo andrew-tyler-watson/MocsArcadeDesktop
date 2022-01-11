@@ -7,4 +7,5 @@
 export default class IpcRequest {
   static BuildLibraryEntries = 'BuildLibraryEntries';
   static DownloadItchGame = 'downloadItch';
+  static LaunchGame = 'launchGame';
 }
