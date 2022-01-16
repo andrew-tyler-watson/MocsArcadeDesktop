@@ -27,7 +27,6 @@ class LibraryManager {
   async launchItchGame(caveId) {
     return new Promise((resolve, reject) => {
       var client = this.makeClient().then((client) => {
-        console.log('launch game');
         client.call(butlerd.createRequest('Launch'), {
           caveId: caveId,
           prereqsDir: '/prereqs',
