@@ -8,9 +8,8 @@ const PreviewCarousel = (props) => {
   useEffect(() => {
     console.log("Creating interval");
     setInterval(() => {
-      console.log("Changing");
       selectedIndex = (Math.abs(selectedIndex + 1) % props.previews.length);
-      console.log(selectedIndex)
+
       const previewId = props.previews[selectedIndex].driveId
         ? props.previews[selectedIndex].driveId
         : props.previews[selectedIndex].url;
@@ -20,13 +19,13 @@ const PreviewCarousel = (props) => {
         block: 'nearest',
         inline: 'center',
       });
-    }, 3000)
+    }, 8000)
   }, []);
 
   let slider = null;
   let previewCards = props.previews.map((preview, i) => {
     return (
-      <GamePreview isSelected={i === selectedIndex} preview={preview} key={i} />
+      <GamePreview preview={preview} key={i} />
     );
   });
 
