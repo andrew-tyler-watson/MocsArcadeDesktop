@@ -10,7 +10,7 @@ export default function GamePreview(props) {
       ? getDriveImageUrl(props.preview.driveId)
       : props.preview.url;
 
-    return <img style={{ width: 'auto', height: '100%' }} src={imageUrl} />;
+    return <img style={{ height: '100%' }} src={imageUrl} />;
   }
 
   function getDriveImageUrl(driveId) {
@@ -18,7 +18,7 @@ export default function GamePreview(props) {
   }
 
   var preview = '';
-  if (props.preview.mediaType.toLowerCase() === 'video') {
+  if (props.preview.type.toLowerCase() === 'video') {
     preview = getVideo();
   } else {
     preview = getImage();
