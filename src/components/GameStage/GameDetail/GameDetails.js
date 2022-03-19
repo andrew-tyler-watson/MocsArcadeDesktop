@@ -141,14 +141,11 @@ const GameDetails = (props) => {
         <Row className="details-detail-row">
           <Col
             className="col-3 description-column"
-            tabIndex="-1"
-            ref={(div) => {
-              focusables.push(div);
-            }}
           >
             <div>{props.game.gameInfo.description}</div>
           </Col>
           <Col
+            id="games-preview"
             className="col-6 game-preview-container"
             ref={(div) => {
               focusables.push(div);
@@ -158,10 +155,6 @@ const GameDetails = (props) => {
           </Col>
           <Col
             className="col-3 author-column"
-            tabIndex="-1"
-            ref={(div) => {
-              focusables.push(div);
-            }}
           >
             <div>Author Info</div>
           </Col>
