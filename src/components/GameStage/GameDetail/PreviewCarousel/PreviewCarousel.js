@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import GamePreview from '../GamePreview/GamePreview';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
-let selectedIndex = 0
+let timer = null
 const PreviewCarousel = (props) => {
+  let selectedIndex = 0
 
   useEffect(() => {
-    console.log("Creating interval");
-    setInterval(() => {
+    if (timer)
+      clearInterval(timer);
+    
+    timer = setInterval(() => {
       selectedIndex = (Math.abs(selectedIndex + 1) % props.previews.length);
+      console.log("Select ", selectedIndex, " - ", props.previews);
 
       const previewId = props.previews[selectedIndex].driveId
         ? props.previews[selectedIndex].driveId
         : props.previews[selectedIndex].url;
       const selectedCard = document.getElementById(previewId);
-  
+
       selectedCard.scrollIntoView({
         block: 'nearest',
         inline: 'center',
       });
-    }, 8000)
-  }, []);
+    }, 3000)
+  });
 
   let slider = null;
   let previewCards = props.previews.map((preview, i) => {
