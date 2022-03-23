@@ -4,6 +4,7 @@ import { useObservable } from '../utilities/customHooks.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GameStage from './GameStage/GameStage';
 import './Layout.css';
+window.$ = window.jQuery = require('jquery');
 
 const Layout = (props) => {
   // const games = props.gameService.getGames();

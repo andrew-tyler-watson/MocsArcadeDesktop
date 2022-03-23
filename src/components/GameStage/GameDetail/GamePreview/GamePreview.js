@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function GamePreview(props) {
+  
   function getVideo() {
     return <iframe src={props.preview.url}></iframe>;
   }
@@ -17,6 +18,10 @@ export default function GamePreview(props) {
     return `https://drive.google.com/uc?export=view&id=${driveId}`;
   }
 
+  // function getYoutubeVideoFrameUrl(driveId) {
+  //   <iframe src={props.game.gameInfo.videoUrl}></iframe>
+  // }
+
   var preview = '';
   if (props.preview.type.toLowerCase() === 'video') {
     preview = getVideo();
@@ -24,9 +29,5 @@ export default function GamePreview(props) {
     preview = getImage();
   }
 
-  const previewId = props.preview.driveId
-    ? props.preview.driveId
-    : props.preview.url;
-
-  return <div id={previewId}>{preview}</div>;
+  return <div ref={(div) => {props.refCallback(div)}} className={props.className}>{preview}</div>;
 }
