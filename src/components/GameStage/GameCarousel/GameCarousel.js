@@ -4,12 +4,14 @@ import GameCard from '../GameCard/GameCard';
 import { LibraryEntry } from '../../../models/libraryEntry';
 
 const GameCarousel = (props) => {
+  let slider = null;
+  let carouselElements = [];
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     props.setSelectedGame(props.games[selectedIndex]);
 
-    scrollSelectedCardIntoView();
+    $(slider).animate({scrollLeft: carouselElements[selectedIndex].offsetLeft - $( window ).width() + carouselElements[selectedIndex].scrollWidth}, "fast");
   }, [selectedIndex]);
 
   useEffect(() => {
@@ -17,22 +19,6 @@ const GameCarousel = (props) => {
       slider.focus();
     }
   });
-
-  function scrollSelectedCardIntoView(index) {
-    const selectedCard = document.getElementById(
-      props.games[selectedIndex].gameInfo.name
-    );
-
-    selectedCard.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center',
-    });
-
-    console.log(props.games[selectedIndex].gameInfo);
-  }
-
-  let slider = null;
 
   let handleArrows = (event) => {
     // left arrow
@@ -48,7 +34,7 @@ const GameCarousel = (props) => {
   };
 
   let gameCards = props.games.map((game, i) => {
-    return <GameCard isSelected={i === selectedIndex} game={game} key={i} />;
+    return <GameCard isSelected={i === selectedIndex} game={game} refCallback={(div) => carouselElements.push(div)} key={i} />;
   });
 
   return (

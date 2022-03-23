@@ -14,12 +14,6 @@ export default function GameCard(props) {
     : 'game-card-image';
 
   return (
-    <div id={props.game.gameInfo.name} className={classes}>
-      <GamePreview preview={props.game.gameplayPreviews[0]} />
-      {/* <img
-        variant="top"
-        src={props.game.gameInfo.imageUrl}
-      /> */}
-    </div>
+    <GamePreview preview={props.game.gameplayPreviews[0]} refCallback = {props.refCallback} className={classes}/>
   );
 }
