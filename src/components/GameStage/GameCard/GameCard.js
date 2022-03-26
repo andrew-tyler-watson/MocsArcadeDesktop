@@ -1,4 +1,5 @@
 import React from 'react';
+import GamePreview from '../GameDetail/GamePreview/GamePreview';
 import { Card } from 'react-bootstrap';
 import styles from './GameCard.css';
 
@@ -9,16 +10,10 @@ export default function GameCard(props) {
   }
 
   const classes = props.isSelected
-    ? 'game-card-image game-card-selected'
+    ? 'game-card-image game-card-selected align-center'
     : 'game-card-image';
 
   return (
-    <div id={props.game.gameInfo.name}>
-      <img
-        className={classes}
-        variant="top"
-        src={props.game.gameInfo.imageUrl}
-      />
-    </div>
+    <GamePreview preview={props.game.gameplayPreviews[0]} refCallback = {props.refCallback} className={classes}/>
   );
 }
